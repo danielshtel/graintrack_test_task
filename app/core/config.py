@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # Resource prefixes
     AUTH_API_PREFIX: str = '/auth'
     CATEGORY_API_PREFIX: str = '/category'
+    PRODUCT_API_PREFIX: str = '/product'
 
     # DB credentials
     DB_NAME: str = env_config('DB_NAME')

@@ -18,3 +18,6 @@ class ErrorMessage(StrEnum):
 
     # Category
     CATEGORY_NOT_FOUND = 'Category not found'
+
+    # Product
+    PRODUCT_NOT_FOUND = 'Product not found'
