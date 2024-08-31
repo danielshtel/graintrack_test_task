@@ -8,7 +8,7 @@ from app.application.dto.user import UserCreate, UserLogin
 from app.core.config import settings
 from app.core.generics import ServiceResponse
 
-router = APIRouter(prefix=settings.AUTH_PREFIX, tags=['Auth API'])
+router = APIRouter(prefix=settings.AUTH_API_PREFIX, tags=['Auth API'])
 
 
 @router.post('/sign-up')
@@ -16,7 +16,6 @@ async def signup(
     user_create: UserCreate,
     session: AsyncSession = Depends(get_db_session)
 ) -> ServiceResponse[AuthResponse]:
-    # TODO: add try/except
     register_command = RegisterUserCommand(user_create, session)
     auth_response = await register_command.execute()
     return ServiceResponse(data=auth_response)

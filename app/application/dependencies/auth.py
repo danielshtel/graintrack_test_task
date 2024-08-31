@@ -1,14 +1,12 @@
 from fastapi import Depends
-from fastapi.security import HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt, JWTError, ExpiredSignatureError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.dependencies.db import get_db_session
-from app.application.dto.auth import Token
-from app.application.services.auth import security_scheme
 from app.core.config import settings
 from app.core.constants import TokenType, ErrorMessage
 
+security_scheme = HTTPBearer()
 
 async def get_token_from_headers(
     credentials: HTTPAuthorizationCredentials = Depends(security_scheme)

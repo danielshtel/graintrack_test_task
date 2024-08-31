@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from sqlalchemy import Numeric, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infrastructure.database import ModelBase
 
@@ -20,3 +20,5 @@ class Product(ModelBase):
     is_discount: Mapped[bool] = mapped_column(default=False, server_default='0')
 
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
+
+    category: Mapped['Category'] = relationship(back_populates='products')

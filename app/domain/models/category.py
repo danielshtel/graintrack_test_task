@@ -10,3 +10,6 @@ class Category(ModelBase):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column()
     parent_category_id: Mapped[int | None] = mapped_column(ForeignKey('categories.id'), nullable=True)
+
+    parent_category: Mapped['Category'] = relationship(remote_side=[id], backref="subcategories")
+    products: Mapped[list['Product']] = relationship(back_populates='category')

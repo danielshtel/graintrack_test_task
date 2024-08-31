@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = '/api/v1'
 
     # Resource prefixes
-    AUTH_PREFIX: str = '/auth'
+    AUTH_API_PREFIX: str = '/auth'
+    CATEGORY_API_PREFIX: str = '/category'
 
     # DB credentials
     DB_NAME: str = env_config('DB_NAME')
