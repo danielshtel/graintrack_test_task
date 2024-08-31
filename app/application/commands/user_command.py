@@ -30,7 +30,7 @@ class RegisterUserCommand(BaseUserCommand):
         return auth_response
 
 
-class LoginUserCommand(BaseCommand):
+class LoginUserCommand(BaseUserCommand):
     def __init__(self, user_login: UserLogin, session: AsyncSession):
         super().__init__(session)
         self.user_login = user_login
