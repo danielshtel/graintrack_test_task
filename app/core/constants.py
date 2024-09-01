@@ -26,3 +26,9 @@ class ErrorMessage(StrEnum):
     OUT_OF_STOCK = 'Reserve quantity is greater than stock quantity'
     RESERVE_NOT_FOUND = 'Reserve not found'
     ALREADY_RESERVED = 'This product is already reserved'
+
+
+
+class SortingOrder(StrEnum):
+    asc = 'asc'
+    desc = 'desc'

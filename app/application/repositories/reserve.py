@@ -26,14 +26,7 @@ class ReserveRepository:
 
     async def reserve_product(self, product: Product, user_id: UUID, quantity: int) -> Reserve:
         reserve = Reserve(user_id=user_id, product_id=product.id, quantity=quantity)
-        self.session.add(reserve)
-        product.stock_quantity -= quantity
-        await self.session.commit()
-        await self.session.refresh(reserve, attribute_names=['id', 'product'])
         return reserve
 
-    async def dereserve(self, reserve: Reserve, product: Product) -> None:
-        product.stock_quantity += reserve.quantity
+    async def dereserve(self, reserve: Reserve) -> None:
         await self.session.delete(reserve)
-        await self.session.commit()
-

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.application.commands.sale_command import BuyProductCommand, SaleReportCommand
 from app.application.commands.product_command import (
     ListProductCommand,
     FilterProductCommand,
@@ -17,6 +18,7 @@ from app.core.config import settings
 from app.core.generics import ServiceResponse
 from app.domain.dto.product import ProductOut, ProductIn, ProductUpdate
 from app.domain.dto.reserve import ReserveOut, ReserveIn
+from app.domain.dto.sale import SaleIn, SaleOut, SalesReportFilters
 
 router = APIRouter(prefix=settings.PRODUCT_API_PREFIX, tags=['Product API'])
 
@@ -115,3 +117,25 @@ async def dereserve_product(
     command = DereserveProductCommand(current_user.id, reserve_id, session)
     result = await command.execute()
     return ServiceResponse(data=result)
+
+
+@router.post('/buy')
+async def buy_product(
+    sale_in: SaleIn = Body(...),
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session)
+) -> ServiceResponse[SaleOut]:
+    command = BuyProductCommand(sale_in, current_user.id, session)
+    sale_out = await command.execute()
+    return ServiceResponse(data=sale_out)
+
+
+@router.post('/report')
+async def get_sold_products_report(
+    filters: SalesReportFilters = Body(...),
+    current_user: User = Depends(get_current_admin),
+    session: AsyncSession = Depends(get_db_session)
+) -> ServiceResponse[list[SaleOut]]:
+    command = SaleReportCommand(filters, session)
+    sales_out = await command.execute()
+    return ServiceResponse(data=sales_out)

@@ -59,7 +59,7 @@ class ProductRepository:
 
         return subcategory_ids
 
-    async def filter_products(self, category_ids) -> list[Product]:
+    async def filter_products(self, category_ids: list[int], offset: int, limit: int) -> list[Product]:
         for category_id in category_ids:
             subcategories = await self.get_subcategories(category_id)
             category_ids.extend(subcategories)
@@ -71,6 +71,8 @@ class ProductRepository:
                     Product.category_id.in_(category_ids),
                     Product.stock_quantity > 0
                 )
+                .offset(offset)
+                .limit(limit)
             )
         ).scalars().all()
 

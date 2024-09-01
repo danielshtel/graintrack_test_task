@@ -15,8 +15,8 @@ class ReserveService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.product_repo = ProductRepository(session)
-        self.reserve_repo = ReserveRepository(session
-                                              )
+        self.reserve_repo = ReserveRepository(session)
+
     async def reserve_product(self, product_id: int, user_id: UUID, quantity: int) -> Reserve:
         product = await self.product_repo.get_product_by_id(product_id)
 
@@ -25,16 +25,19 @@ class ReserveService:
 
         if quantity > product.stock_quantity:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessage.OUT_OF_STOCK)
+        reserve = await self.reserve_repo.reserve_product(product, user_id, quantity)
 
         try:
-            reserve = await self.reserve_repo.reserve_product(product, user_id, quantity)
+            self.session.add(reserve)
+            product.stock_quantity -= quantity
+            await self.session.commit()
+            await self.session.refresh(reserve, attribute_names=['id', 'product'])
         except IntegrityError:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=ErrorMessage.ALREADY_RESERVED)
 
         return reserve
 
     async def dereserve_product(self, reserve_id: int, user_id: UUID) -> bool:
-
         reserve = await self.reserve_repo.get_reserve_by_id(reserve_id, user_id)
 
         if not reserve:
@@ -45,6 +48,9 @@ class ReserveService:
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=ErrorMessage.PRODUCT_NOT_FOUND)
 
-        await self.reserve_repo.dereserve(reserve, product)
+        await self.reserve_repo.dereserve(reserve)
+
+        product.stock_quantity += reserve.quantity
+        await self.session.commit()
 
         return True

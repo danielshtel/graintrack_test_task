@@ -78,12 +78,14 @@ class DeleteProductCommand(BaseProductCommand):
 
 
 class FilterProductCommand(BaseProductCommand):
-    def __init__(self, categories_ids: list[int], session: AsyncSession):
+    def __init__(self, categories_ids: list[int], offset: int, limit: int, session: AsyncSession):
         super().__init__(session)
         self.categories_ids = categories_ids
+        self.offset = offset
+        self.limit = limit
 
     async def execute(self) -> list[ProductOut]:
-        products = await self.repo.filter_products(self.categories_ids)
+        products = await self.repo.filter_products(self.categories_ids, self.offset, self.limit)
         products_out = [
             ProductOut(
                 id=product.id,
