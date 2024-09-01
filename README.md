@@ -30,3 +30,7 @@ password: admin123!
 ```
 * Or you can create your own simple user via /sign-up endpoint
 * Endpoints which require admin rights are documented
+
+
+## Tech stack:
+- FastAPI, Pydantic, SQLAlchemy, PostgreSQL, Alembic
