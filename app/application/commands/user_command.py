@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from app.application.commands.base_command import BaseCommand
+from app.application.models import User
 from app.application.repositories import UserRepository
 from app.core.auth import create_auth_response, verify_password
 from app.core.constants import ErrorMessage
@@ -42,3 +43,13 @@ class LoginUserCommand(BaseUserCommand):
             return auth_response
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=ErrorMessage.INVALID_CREDENTIALS)
+
+
+class GetNewTokenUserCommand(BaseUserCommand):
+    def __init__(self, user: User, session: AsyncSession):
+        super().__init__(session)
+        self.user = user
+
+    async def execute(self) -> AuthResponse:
+        auth_response = create_auth_response(self.user)
+        return auth_response

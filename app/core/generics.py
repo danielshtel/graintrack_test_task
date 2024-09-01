@@ -10,4 +10,3 @@ T = TypeVar('T')
 
 class ServiceResponse(BaseModel, Generic[T]):
     data: T | list[T] = None
-    message: str = 'All good'

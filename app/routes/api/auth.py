@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.commands.user_command import RegisterUserCommand, LoginUserCommand
+from app.application.commands.user_command import RegisterUserCommand, LoginUserCommand, GetNewTokenUserCommand
 from app.application.dependencies.db import get_db_session
+from app.application.dependencies.user import get_current_user
+from app.application.models import User
 from app.domain.dto.auth import AuthResponse
 from app.domain.dto.user import UserCreate, UserLogin
 from app.core.config import settings
@@ -29,3 +31,12 @@ async def sign_in(
     login_command = LoginUserCommand(user_login, session)
     auth_response = await login_command.execute()
     return ServiceResponse(data=auth_response)
+
+@router.get('/token')
+async def get_new_token_pair(
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session)
+) -> ServiceResponse[AuthResponse]:
+    get_new_token_command = GetNewTokenUserCommand(current_user, session)
+    new_token = await get_new_token_command.execute()
+    return ServiceResponse(data=new_token)

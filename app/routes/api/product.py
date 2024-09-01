@@ -9,7 +9,7 @@ from app.application.commands.product_command import (
     DeleteProductCommand,
     UpdateProductCommand
 )
-from app.application.commands.reserve import ReserveProductCommand, DereserveProductCommand
+from app.application.commands.reserve_command import ReserveProductCommand, DereserveProductCommand
 from app.application.dependencies.db import get_db_session
 from app.application.dependencies.user import get_current_user, get_current_admin
 from app.application.models import User
