@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.interfaces.api import (
+from app.routes.api import (
     auth,
     category,
     product

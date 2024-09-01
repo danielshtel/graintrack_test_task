@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.commands.user_command import RegisterUserCommand, LoginUserCommand
 from app.application.dependencies.db import get_db_session
-from app.application.dto.auth import AuthResponse
-from app.application.dto.user import UserCreate, UserLogin
+from app.domain.dto.auth import AuthResponse
+from app.domain.dto.user import UserCreate, UserLogin
 from app.core.config import settings
 from app.core.generics import ServiceResponse
 

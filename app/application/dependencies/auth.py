@@ -1,12 +1,12 @@
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt, JWTError, ExpiredSignatureError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.constants import TokenType, ErrorMessage
 
 security_scheme = HTTPBearer()
+
 
 async def get_token_from_headers(
     credentials: HTTPAuthorizationCredentials = Depends(security_scheme)
@@ -15,8 +15,23 @@ async def get_token_from_headers(
 
     return token
 
-async def validate_token(token: str, session: AsyncSession) -> dict:
 
+async def verify_token(
+    token: str = Depends(get_token_from_headers),
+) -> dict:
+    claims = await validate_token(token)
+    return claims
+
+
+async def get_token_from_headers(
+    credentials: HTTPAuthorizationCredentials = Depends(security_scheme)
+) -> str:
+    token = credentials.credentials
+
+    return token
+
+
+async def validate_token(token: str) -> dict:
     try:
         token_type = jwt.get_unverified_claims(token)['token_type']
     except JWTError:
@@ -28,9 +43,11 @@ async def validate_token(token: str, session: AsyncSession) -> dict:
         secret = settings.REFRESH_TOKEN_SECRET
 
     try:
-        claims = jwt.decode(token=token,
-                            key=secret,
-                            algorithms=settings.JWT_ALGORITHM)
+        claims = jwt.decode(
+            token=token,
+            key=secret,
+            algorithms=settings.JWT_ALGORITHM
+        )
     except ExpiredSignatureError:
         raise JWTError(ErrorMessage.TOKEN_IS_INVALID)
     return claims

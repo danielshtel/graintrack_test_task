@@ -2,15 +2,15 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.commands.base_command import BaseCommand
-from app.application.dto.product import ProductIn, ProductOut, ProductUpdate
-from app.application.services.product import ProductService
+from app.application.repositories import ProductRepository
 from app.core.constants import ErrorMessage
+from app.domain.dto.product import ProductIn, ProductOut, ProductUpdate
 
 
 class BaseProductCommand(BaseCommand):
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.service = ProductService(session)
+        self.repo = ProductRepository(session)
 
 
 class CreateProductCommand(BaseProductCommand):
@@ -19,7 +19,7 @@ class CreateProductCommand(BaseProductCommand):
         self.product_in = product_in
 
     async def execute(self) -> ProductOut:
-        product = await self.service.create_product(self.product_in)
+        product = await self.repo.create_product(self.product_in)
         product_out = ProductOut(
             id=product.id,
             name=product.name,
@@ -42,12 +42,12 @@ class UpdateProductCommand(BaseProductCommand):
         self.product_update = product_update
 
     async def execute(self) -> ProductOut:
-        product = await self.service.get_product_by_id(self.product_id)
+        product = await self.repo.get_product_by_id(self.product_id)
 
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=ErrorMessage.PRODUCT_NOT_FOUND)
 
-        product = await self.service.update_product(self.product_update, product)
+        product = await self.repo.update_product(self.product_update, product)
         product_out = ProductOut(
             id=product.id,
             name=product.name,
@@ -69,12 +69,12 @@ class DeleteProductCommand(BaseProductCommand):
         self.product_id = product_id
 
     async def execute(self) -> None:
-        product = await self.service.get_product_by_id(self.product_id)
+        product = await self.repo.get_product_by_id(self.product_id)
 
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=ErrorMessage.PRODUCT_NOT_FOUND)
 
-        await self.service.delete_product(product)
+        await self.repo.delete_product(product)
 
 
 class FilterProductCommand(BaseProductCommand):
@@ -83,7 +83,7 @@ class FilterProductCommand(BaseProductCommand):
         self.categories_ids = categories_ids
 
     async def execute(self) -> list[ProductOut]:
-        products = await self.service.filter_products(self.categories_ids)
+        products = await self.repo.filter_products(self.categories_ids)
         products_out = [
             ProductOut(
                 id=product.id,
@@ -108,7 +108,7 @@ class GetProductCommand(BaseProductCommand):
         self.product_id = product_id
 
     async def execute(self) -> ProductOut:
-        product = await self.service.get_product_by_id(self.product_id)
+        product = await self.repo.get_product_by_id(self.product_id)
 
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=ErrorMessage.PRODUCT_NOT_FOUND)
@@ -135,7 +135,7 @@ class ListProductCommand(BaseProductCommand):
         self.limit = limit
 
     async def execute(self) -> list[ProductOut]:
-        products = await self.service.list_products(self.offset, self.limit)
+        products = await self.repo.list_products(self.offset, self.limit)
         products_out = [
             ProductOut(
                 id=product.id,

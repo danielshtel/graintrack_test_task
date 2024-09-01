@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
-from app.application.dto.user import UserCreate
-from app.application.services.auth import generate_password_hash
-from app.domain.models import User
+from app.domain.dto.user import UserCreate
+from app.core.auth import generate_password_hash
+from app.application.models import User
 
 
 class UserRepository:

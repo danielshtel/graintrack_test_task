@@ -1,7 +1,7 @@
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.models import Category
+from app.application.models import Category
 
 
 class CategoryRepository:

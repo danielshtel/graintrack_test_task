@@ -5,10 +5,10 @@ from app.application.commands.product_command import ListProductCommand, FilterP
     CreateProductCommand, DeleteProductCommand, UpdateProductCommand
 from app.application.dependencies.db import get_db_session
 from app.application.dependencies.user import get_current_user, get_current_admin
-from app.application.dto.product import ProductOut, ProductIn, ProductUpdate
+from app.domain.dto.product import ProductOut, ProductIn, ProductUpdate
 from app.core.config import settings
 from app.core.generics import ServiceResponse
-from app.domain.models import User
+from app.application.models import User
 
 router = APIRouter(prefix=settings.PRODUCT_API_PREFIX, tags=['Product API'])
 

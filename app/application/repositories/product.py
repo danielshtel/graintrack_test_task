@@ -1,8 +1,8 @@
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.dto.product import ProductIn, ProductUpdate
-from app.domain.models import Product, Category
+from app.domain.dto.product import ProductIn, ProductUpdate
+from app.application.models import Product, Category
 
 
 class ProductRepository:

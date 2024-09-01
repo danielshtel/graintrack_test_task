@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.commands.category_command import CreateCategoryCommand, GetCategoryCommand
+from app.application.commands.category_command import CreateCategoryCommand, GetCategoryCommand, GetCategoryListCommand
 from app.application.dependencies.db import get_db_session
 from app.application.dependencies.user import get_current_admin, get_current_user
-from app.application.dto.category import CategoryOut, CategoryIn
-from app.application.services.category import CategoryService
+from app.application.models import User
 from app.core.config import settings
 from app.core.generics import ServiceResponse
-from app.domain.models import User
+from app.domain.dto import CategoryOut, CategoryIn
 
 router = APIRouter(prefix=settings.CATEGORY_API_PREFIX, tags=['Category API'])
 
@@ -32,8 +31,8 @@ async def list_categories(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db_session)
 ) -> ServiceResponse[list[CategoryOut]]:
-    category_service = CategoryService(session)
-    categories_out = await category_service.list_categories(offset, limit)
+    category_command = GetCategoryListCommand(offset, limit, session)
+    categories_out = await category_command.execute()
     response = ServiceResponse(data=categories_out)
     return response
 

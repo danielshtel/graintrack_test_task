@@ -8,7 +8,7 @@ from jose import ExpiredSignatureError, JWTError
 from jose.exceptions import JWTClaimsError
 
 from app.core.config import settings
-from app.interfaces.api import api_v1_router
+from app.routes.api import api_v1_router
 
 log = logging.getLogger(__name__)
 
