@@ -7,7 +7,7 @@ git clone https://github.com/danielshtel/graintrack_test_task.git
 ## Cook the env variables
 ```bash
 cd graintrack_test_task
-cp .env.example
+cp .env.example .env
 ```
 
 ## Start containers
