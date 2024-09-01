@@ -38,5 +38,5 @@ async def get_new_token_pair(
     session: AsyncSession = Depends(get_db_session)
 ) -> ServiceResponse[AuthResponse]:
     get_new_token_command = GetNewTokenUserCommand(current_user, session)
-    new_token = await get_new_token_command.execute()
-    return ServiceResponse(data=new_token)
+    auth_response = await get_new_token_command.execute()
+    return ServiceResponse(data=auth_response)
