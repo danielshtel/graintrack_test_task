@@ -32,3 +32,5 @@ async def get_current_admin(
 ) -> User:
     if not user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=ErrorMessage.NO_PERMISSIONS)
+    return user
+

@@ -1,14 +1,22 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.commands.product_command import ListProductCommand, FilterProductCommand, GetProductCommand, \
-    CreateProductCommand, DeleteProductCommand, UpdateProductCommand
+from app.application.commands.product_command import (
+    ListProductCommand,
+    FilterProductCommand,
+    GetProductCommand,
+    CreateProductCommand,
+    DeleteProductCommand,
+    UpdateProductCommand
+)
+from app.application.commands.reserve import ReserveProductCommand, DereserveProductCommand
 from app.application.dependencies.db import get_db_session
 from app.application.dependencies.user import get_current_user, get_current_admin
-from app.domain.dto.product import ProductOut, ProductIn, ProductUpdate
+from app.application.models import User
 from app.core.config import settings
 from app.core.generics import ServiceResponse
-from app.application.models import User
+from app.domain.dto.product import ProductOut, ProductIn, ProductUpdate
+from app.domain.dto.reserve import ReserveOut, ReserveIn
 
 router = APIRouter(prefix=settings.PRODUCT_API_PREFIX, tags=['Product API'])
 
@@ -85,3 +93,25 @@ async def delete_product(
     command = DeleteProductCommand(product_id, session)
     await command.execute()
     return ServiceResponse()
+
+
+@router.post('/reserve')
+async def reserve_product(
+    reserve_in: ReserveIn = Body(...),
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session)
+) -> ServiceResponse[ReserveOut]:
+    command = ReserveProductCommand(reserve_in, current_user.id, session)
+    reserve = await command.execute()
+    return ServiceResponse(data=reserve)
+
+
+@router.delete('/de-reserve/{reserve_id}')
+async def dereserve_product(
+    reserve_id: int,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session)
+) -> ServiceResponse[bool]:
+    command = DereserveProductCommand(current_user.id, reserve_id, session)
+    result = await command.execute()
+    return ServiceResponse(data=result)

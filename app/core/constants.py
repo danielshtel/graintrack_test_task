@@ -21,3 +21,8 @@ class ErrorMessage(StrEnum):
 
     # Product
     PRODUCT_NOT_FOUND = 'Product not found'
+
+    # Reserve
+    OUT_OF_STOCK = 'Reserve quantity is greater than stock quantity'
+    RESERVE_NOT_FOUND = 'Reserve not found'
+    ALREADY_RESERVED = 'This product is already reserved'

@@ -17,9 +17,7 @@ class Product(ModelBase):
     stock_quantity: Mapped[int] = mapped_column(default=0, server_default='0')
     is_active: Mapped[bool] = mapped_column(default=True, server_default='1')
     is_discount: Mapped[bool] = mapped_column(default=False, server_default='0')
-
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
-
     category: Mapped['Category'] = relationship(back_populates='products')
 
     @property
