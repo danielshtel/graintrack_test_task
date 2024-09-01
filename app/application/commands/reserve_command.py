@@ -44,7 +44,7 @@ class ReserveProductCommand(ReserveBaseCommand):
         return reserve_out
 
 
-class DereserveProductCommand(ReserveBaseCommand):
+class CancelReserveProductCommand(ReserveBaseCommand):
 
     def __init__(self, user_id: UUID, reserve_id: int, session: AsyncSession):
         super().__init__(session)

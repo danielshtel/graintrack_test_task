@@ -28,7 +28,7 @@ docker-compose exec -T db psql -U graintrack graintrack < dump.sql
 username: admin
 password: admin123!
 ```
-* Or you can create your own simple user via /sign-up endpoint
+* Or you can create your own usual user via /sign-up endpoint
 * Endpoints which require admin rights are documented
 
 

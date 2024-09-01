@@ -10,7 +10,7 @@ from app.application.commands.product_command import (
     DeleteProductCommand,
     UpdateProductCommand
 )
-from app.application.commands.reserve_command import ReserveProductCommand, DereserveProductCommand
+from app.application.commands.reserve_command import ReserveProductCommand, CancelReserveProductCommand
 from app.application.dependencies.db import get_db_session
 from app.application.dependencies.user import get_current_user, get_current_admin
 from app.application.models import User
@@ -108,13 +108,13 @@ async def reserve_product(
     return ServiceResponse(data=reserve)
 
 
-@router.delete('/de-reserve/{reserve_id}')
-async def dereserve_product(
+@router.delete('/cancel-reserve/{reserve_id}')
+async def cancel_product_reservation(
     reserve_id: int,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db_session)
 ) -> ServiceResponse[bool]:
-    command = DereserveProductCommand(current_user.id, reserve_id, session)
+    command = CancelReserveProductCommand(current_user.id, reserve_id, session)
     result = await command.execute()
     return ServiceResponse(data=result)
 
