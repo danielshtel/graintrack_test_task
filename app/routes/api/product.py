@@ -136,6 +136,7 @@ async def get_sold_products_report(
     current_user: User = Depends(get_current_admin),
     session: AsyncSession = Depends(get_db_session)
 ) -> ServiceResponse[list[SaleOut]]:
+    """Requires admin permissions"""
     command = SaleReportCommand(filters, session)
     sales_out = await command.execute()
     return ServiceResponse(data=sales_out)
