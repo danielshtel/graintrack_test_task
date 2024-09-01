@@ -21,7 +21,7 @@ docker-compose exec -T db psql -U graintrack graintrack < dump.sql
 ```
 
 ## Usage:
-* API docs are available on [Swagger Docs](localhost:8000/docs).
+* API docs are available on [Swagger Docs](http://localhost:8000/docs).
 * Application use JWT authentication
 * You can use standard admin credentials
 ```
